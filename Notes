@@ -1,0 +1,310 @@
+Start up is npm run dev
+
+index.js acts like app.js in react
+
+When creating a component(page), the route name
+is tied to the file name. Index.js creates a / for
+the homepage route.
+
+Project:
+
+Create about.jsx in Pages folder
+
+Emmet sfc
+
+Name const and add to export
+
+return div w/h1 saying About followed by 
+p tag using lorem and duplicate a second p tag
+
+Add 2 p tags w/ lorem on the homepage
+
+Create gramps folder in Pages and file called gramps.jsx
+
+Now to access the file you have to addthe folder and 
+file to the path of the browser ... gramps/gramps
+
+If you create an index.js within the folderthe callback 
+on the browser is just the folder name ... (gramps)
+You can also name the component what you choice andit 
+doesn't have to match index.js name
+
+Drop in components can be used to create navbar,ect.
+but the components are created outside the page folder
+
+Create a folder in the root (comp)
+
+Add a navbar.js file.
+
+This component can be used in multiple pages.
+
+In navbar.js return a nav tag followed by a 
+h1 followed by a div w/ an a tag without the href.
+
+Add component to pages/index.js
+
+Repeat proccess with a footer.jsx
+
+To link from a link in a component 
+First import Link from "next/link"
+
+Surround each a tag with <Link></Link>
+
+Add the href to the link tag ... <Link href="">
+
+Then use react-router-dom practice ... (/,/about,/gramps)
+
+Now you can import to Pages/index.js above the footer ... (import Link from "next/link")
+
+Inside Link add a tag and href in Link tag.
+
+Inside the quotes in href add gramps
+
+Now look at code splitting by inspect and network tab.
+When we click a link, we see the path,if return to previous page nothing is added. If we click a different link, it adds it to the network. This is to make the code already available once it loads the 1st time.
+
+To save copy and pasting in every page needing a component, create a layout file.
+
+Inside the comps folder add Layout.jsx file.
+
+Now go to app.js file in pages.
+
+Next import the Layout.js file and wrap the <Component {...pageProps} /> in <Layout></Layout>
+
+In the Layout file destructure and add children
+
+Inside the div tag add <NavBar />, then the children { children }, finally the <Footer />.
+You now can remove the NavBar and Footer from Pages/index.js
+
+Next style the app. Global.css is already in the app under styles.
+
+Copy and paste the github repo. This will apply on all pages.
+
+Next we use css modules for individual pages.
+
+These styles only apply to individual components. (Home.modules.css)
+found in pages/index.js.
+
+*** All style items must be class selectors ***
+
+In Home.module.css make a change in one of the style items.
+
+Next go to the tag you want to use the style item in andinsert as following ...
+<div className={styles.(style.item name}. 
+
+Delete all the content in Home.module.css file.
+
+Copy and paste from github repo.
+
+Next add styles.title to the h1 in index.js
+
+In the styles folder create a gramps.module.css folder.
+
+Now create a custom 404 error page.
+
+In pages add a new file 404.js
+Name component NotFound.
+
+Create a div ... div.not-found w/ h1 tag followed by an h2 tag.
+
+Add p tag with Link to Home ... 
+
+Next import hooks use effect and useRouter(fron next/router)
+
+Use setTimeout method in useEffect ... followed by the time ....
+useEffect(() => {
+    setTimeOut(() => {
+        router.go(1)
+    }, 3000)
+}, [])
+
+Next create const router = useRouter();
+
+router.go() -1 acts like back button +1 acts like forward button
+
+Instead use router.push('/');
+
+This will redirect back to the home page after 3 seconds.
+
+To add images they need to be placed inside the public folder.
+
+Then add to where you want to insert them...
+ex...Replace the h1(Home Page with the image in navbar) ... <img src="/pic 1.jpeg" />
+
+Now try img component ... import Image from "next/image"
+Replace img with Image and add width and height properties
+ex <Image src="pic 1.jpeg" width={150} height={150} />
+
+*** Notice the Head component is already imported to index.js ***
+
+Add it to the top of your return <Head></Head> along withplacing everything in a fragment.
+
+Now add title tag. Add (Gramps Pad | Home) in the title tag. ... Tab on top.
+
+You now can add Metadata ... Add meta tag(keywords) ... <meta name="keywords" content="gramps"/>
+
+Now inspect to see meta tag
+
+Now copy and paste head tag into about.js w/ import Head from "next/head
+
+
+Time to link to Json placeholder:
+
+Open Json Placeholder website and click on users ...
+Copy the URL
+
+*** You want to fetch the data in gramps/index.js. ***
+
+At the top you want to export ... export const getStaticProps = async () => {
+    const res = await fetch('https://jsonplaceholder.typicode.com/users');
+    const data = await res.json();
+
+    return {
+        props: { gramps: data }
+    }
+}
+
+In const Gramps add gramps and destructure it.
+
+Now time to map and output:
+
+{gramps.map((gramp) => (
+                <div key={gramp.id}>
+                    <a className="">
+                        <h3>{ gramp.name }</h3> *** You can add more props
+                    </a>
+                </div>
+
+))}
+
+
+*** Make sure you url is /gramps ***
+
+
+
+Dynamic Routing:
+
+
+/gramps/id - part of thr route
+
+Create a new file [id].js
+
+***  [] This indicates a route parameter and it is going to be changable ***
+
+Create div w/h1 tag in return. Go to Webpage and enter /gramps/(any#) to test.
+
+Go to gramps/index.js and at the key={gramp.id} link the [id]
+.js page ...
+
+<Link href={'/gramps/' + gramp.id} key={gramp.id}>
+    <a className={styles.single}>
+        <h3>{ gramp.name }</h3>
+    </a>
+</Link>
+
+*** Don't forget to import Link ***
+
+At the top of [id].js page export the getStaticPaths function ...
+
+const getStaticPaths = async () => {
+    const res = await fetch('https://jsonplaceholder.typicode.com/users');
+    const data = await res.json();
+    const paths = data.map(gramp => {
+        return {
+            params: { id: gramp.idtoString() }
+        }
+    })
+
+    return {
+        paths,
+        fallback: false
+    }
+}
+
+const Details = () => {
+    return (
+        <div>
+            <h1>Details Page</h1>
+        </div>
+    );
+}
+ 
+export default Details;
+
+
+Single paths:
+
+
+Add export getStaticProps 
+
+export const getStaticPaths = async () => {
+    const res = await fetch('https://jsonplaceholder.typicode.com/users');
+    const data = await res.json();
+
+    const paths = data.map(gramp => {
+        return {
+            params: { id: gramp.id.toString() }
+        }
+    })
+
+    return {
+        paths,
+        fallback: false
+    }
+}
+
+export const getStaticProps = async (context) => {
+    const id = context.params.id;
+    const res = await fetch('https://jsonplaceholder.typicode.com/users/' + id);
+    const data = await res.json();
+
+    return {
+        props: { gramp: data }
+    }
+}
+
+const Details = ({ gramp }) => {
+    return (
+        <div>
+            <h1>{ gramp.name }</h1>
+            <p>{ gramp.email }</p>
+            <p>{ gramp.website }</p>
+            <p>{ gramp.address.city }</p>
+        </div>
+    );
+}
+
+export default Details;
+
+Next open a 2nd terminal...cd app... and npm run build
+
+Open next folder/server/pages to see the pages you made
+and then open gramps to see the getail pages that were
+generated.
+
+Deploying:
+
+
+Easiest way to deploy next.js is to use Vercel
+Sign up for an account
+
+enter bbox0962 and create a new repositoru and add it.
+Copy the http link.
+
+In a new terminal cd app ...git remote add origin then paste the http Link
+Then git add .
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
